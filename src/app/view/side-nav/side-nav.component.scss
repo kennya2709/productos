@@ -1,0 +1,27 @@
+mat-toolbar {
+  background-color: #ea7ce6;
+  color: #ffffff;
+}
+
+mat-sidenav-container {
+  background-color: #f2f2f2;
+}
+
+mat-nav-list a {
+  color: #666;
+  text-decoration: none;
+}
+
+mat-nav-list a:hover {
+  background-color: #e5e5e5;
+  color: #333;
+}
+
+.example-container {
+  height: 100%;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
