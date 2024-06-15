@@ -1,34 +1,44 @@
-<h2 mat-dialog-title>{{ isEditMode ? 'Editar producto' : 'Agregar producto' }}</h2>
-<mat-dialog-content>
-  <form [formGroup]="formGroup" >
-    <mat-form-field>
-      <mat-label>Nombre</mat-label>
-      <input matInput formControlName="name" placeholder="Nombre del producto">
-    </mat-form-field>
+<h1 mat-dialog-title>{{ data ? 'Editar Producto' : 'Agregar Producto' }}</h1>
+<div mat-dialog-content>
+  <form [formGroup]="productForm">
     <mat-form-field>
       <mat-label>Código</mat-label>
-      <input matInput formControlName="code" placeholder="Código del producto">
+      <input matInput formControlName="code">
+      <mat-error *ngIf="productForm.get('code')?.invalid && productForm.get('code')?.touched">
+        Código es requerido
+      </mat-error>
     </mat-form-field>
     <mat-form-field>
-      <mat-label>Categoría</mat-label>
-      <input matInput formControlName="category" placeholder="Categoría del producto">
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Descripción</mat-label>
-      <textarea matInput formControlName="description" placeholder="Descripción del producto"></textarea>
+      <mat-label>Nombre</mat-label>
+      <input matInput formControlName="name">
+      <mat-error *ngIf="productForm.get('name')?.invalid && productForm.get('name')?.touched">
+        Nombre es requerido
+      </mat-error>
     </mat-form-field>
     <mat-form-field>
       <mat-label>Precio</mat-label>
-      <input matInput formControlName="price" placeholder="Precio del producto">
+      <input matInput formControlName="price" type="number">
+      <mat-error *ngIf="productForm.get('price')?.invalid && productForm.get('price')?.touched">
+        Precio es requerido
+      </mat-error>
     </mat-form-field>
     <mat-form-field>
       <mat-label>Cantidad</mat-label>
-      <input matInput formControlName="amount" placeholder="Cantidad del producto">
+      <input matInput formControlName="amount" type="number">
+      <mat-error *ngIf="productForm.get('amount')?.invalid && productForm.get('amount')?.touched">
+        Cantidad es requerida
+      </mat-error>
     </mat-form-field>
-    <!-- Agrega otros campos aquí según tu modelo Producto -->
+    <mat-form-field>
+      <mat-label>Estado</mat-label>
+      <input matInput formControlName="status">
+      <mat-error *ngIf="productForm.get('status')?.invalid && productForm.get('status')?.touched">
+        Estado es requerido
+      </mat-error>
+    </mat-form-field>
   </form>
-</mat-dialog-content>
-<mat-dialog-actions>
-  <button mat-raised-button color="primary" type="submit">Guardar</button>
-  <button mat-raised-button color="warn" >Cancelar</button>
-</mat-dialog-actions>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Cancelar</button>
+  <button mat-button (click)="onSave()" [disabled]="!productForm.valid">Guardar</button>
+</div>

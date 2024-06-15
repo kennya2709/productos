@@ -7,11 +7,23 @@ import { Producto } from '../model/producto';
   providedIn: 'root'
 })
 export class ProductoService {
-  url="http://localhost:5000/api/product";
+  private apiUrl = 'http://localhost:5000/api/product'; // Ajusta la URL si es necesario
 
-  constructor(private http:HttpClient) { }
+  constructor(private http: HttpClient) { }
 
-  getProducts():Observable<Producto[]>{
-    return this.http.get<Producto[]>(this.url);
+  getProducts(): Observable<Producto[]> {
+    return this.http.get<Producto[]>(this.apiUrl);
+  }
+
+  addProduct(product: Producto): Observable<Producto> {
+    return this.http.post<Producto>(this.apiUrl, product);
+  }
+
+  editProduct(product: Producto): Observable<Producto> {
+    return this.http.patch<Producto>(`${this.apiUrl}/${product.id}`, product);
+  }
+
+  deleteProduct(productId: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${productId}`);
   }
 }

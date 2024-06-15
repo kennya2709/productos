@@ -1,54 +1,55 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Producto } from 'src/app/model/producto';
-
+import { ProductoService } from 'src/app/service/producto.service';
 
 @Component({
   selector: 'app-product-form',
   templateUrl: './product-form.component.html',
   styleUrls: ['./product-form.component.scss']
 })
-export class ProductFormComponent implements OnInit {
-  formGroup!: FormGroup;
-  isEditMode: boolean = false; // Agrega la propiedad isEditMode y establece su valor inicial en false
+export class ProductFormComponent {
+  productForm: FormGroup;
 
   constructor(
     public dialogRef: MatDialogRef<ProductFormComponent>,
     @Inject(MAT_DIALOG_DATA) public data: Producto,
-    private formBuilder: FormBuilder
-  ) {}
-
-  ngOnInit(): void {
-    this.initForm();
-    if (this.data) {
-      this.isEditMode = true; // Si hay datos, establece isEditMode en true
-    }
-  }
-
-  initForm(): void {
-    if (!this.data) {
-      this.formGroup = this.formBuilder.group({
-        name: ["", Validators.required],
-        code: ["", Validators.required],
-        category: ["", Validators.required],
-        description: ["", Validators.required],
-        price: ["", Validators.required],
-        amount: ["", Validators.required]
-      });
-    } else {
-      this.formGroup = this.formBuilder.group({
-        name: [this.data.name || "", Validators.required],
-        code: [this.data.code || "", Validators.required],
-        category: [this.data.category || "", Validators.required],
-        description: [this.data.description || "", Validators.required],
-        price: [this.data.price || "", Validators.required],
-        amount: [this.data.amount || "", Validators.required]
-      });
-    }
+    private fb: FormBuilder,
+    private productService: ProductoService
+  ) {
+    this.productForm = this.fb.group({
+      code: [data ? data.code : '', Validators.required], // Agregar el campo code
+      name: [data ? data.name : '', Validators.required],
+      price: [data ? data.price : '', Validators.required],
+      amount: [data ? data.amount : '', Validators.required],
+      status: [data ? data.status : '', Validators.required]
+    });
   }
 
   onNoClick(): void {
     this.dialogRef.close();
+  }
+
+  onSave(): void {
+    if (this.productForm.valid) {
+      const product = this.productForm.value;
+      if (this.data) {
+        product._id = this.data.id; // Asignar el _id si estás editando un producto existente
+        this.productService.editProduct(product).subscribe(result => {
+          this.dialogRef.close(result); // Cerrar el diálogo con el resultado del servidor
+        }, error => {
+          console.error('Error al editar producto:', error);
+          // Aquí puedes manejar el error de manera adecuada
+        });
+      } else {
+        this.productService.addProduct(product).subscribe(result => {
+          this.dialogRef.close(result); // Cerrar el diálogo con el resultado del servidor
+        }, error => {
+          console.error('Error al agregar producto:', error);
+          // Aquí puedes manejar el error de manera adecuada
+        });
+      }
+    }
   }
 }
